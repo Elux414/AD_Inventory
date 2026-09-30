@@ -3396,11 +3396,11 @@ function Update-WorksheetWithEPPlus {
         [Parameter(Mandatory=$true)] $ExcelPackage,
         [Parameter(Mandatory=$true)] [string] $WorksheetName,
         [Parameter(Mandatory=$true)] [object[]] $Rows,
-        [string] $KeyColumn = "ComputerName"
+        [string] $KeyColumn = "ComputerName",
+		[switch] $RemoveMissingRows
     )
 
     $rowsArray = @($Rows)
-    if ($rowsArray.Count -eq 0) { return }
 
     $worksheet = $ExcelPackage.Workbook.Worksheets[$WorksheetName]
     if ($null -eq $worksheet) {
@@ -3461,6 +3461,75 @@ function Update-WorksheetWithEPPlus {
                 $existing[([string]$existingValue).Trim().ToUpperInvariant()] = $rowNumber
             }
         }
+    }
+
+	if ($RemoveMissingRows -and $headerMap.ContainsKey($KeyColumn) -and $lastRow -ge 2) {
+        $desiredKeys = @{}
+
+        foreach ($item in $rowsArray) {
+            $keyProperty = $item.PSObject.Properties[$KeyColumn]
+
+            if ($null -ne $keyProperty -and $null -ne $keyProperty.Value) {
+                $key = ([string]$keyProperty.Value).Trim().ToUpperInvariant()
+
+                if ($key) {
+                    $desiredKeys[$key] = $true
+                }
+            }
+        }
+
+        $keyColumnNumber = $headerMap[$KeyColumn]
+        $rowsToDelete = [System.Collections.Generic.List[int]]::new()
+
+        for ($rowNumber = 2; $rowNumber -le $lastRow; $rowNumber++) {
+            $existingValue = $worksheet.Cells[$rowNumber, $keyColumnNumber].Value
+
+            if (
+                $null -ne $existingValue -and
+                [string]::IsNullOrWhiteSpace([string]$existingValue) -eq $false
+            ) {
+                $existingKey = ([string]$existingValue).Trim().ToUpperInvariant()
+
+                if (-not $desiredKeys.ContainsKey($existingKey)) {
+                    $rowsToDelete.Add($rowNumber)
+                }
+            }
+        }
+
+        for ($index = $rowsToDelete.Count - 1; $index -ge 0; $index--) {
+            $worksheet.DeleteRow($rowsToDelete[$index], 1)
+        }
+
+        if ($rowsToDelete.Count -gt 0) {
+            $lastRow = if ($worksheet.Dimension) {
+                $worksheet.Dimension.End.Row
+            }
+            else {
+                1
+            }
+
+            $existing = @{}
+
+            if ($lastRow -ge 2) {
+                for ($rowNumber = 2; $rowNumber -le $lastRow; $rowNumber++) {
+                    $existingValue = $worksheet.Cells[$rowNumber, $keyColumnNumber].Value
+
+                    if (
+                        $null -ne $existingValue -and
+                        [string]::IsNullOrWhiteSpace([string]$existingValue) -eq $false
+                    ) {
+                        $existing[([string]$existingValue).Trim().ToUpperInvariant()] = $rowNumber
+                    }
+                }
+            }
+        }
+    }
+
+	$currentLastRow = if ($worksheet.Dimension) {
+        $worksheet.Dimension.End.Row
+    }
+    else {
+        1
     }
 
     $nextRow = [Math]::Max($lastRow + 1, 2)
@@ -3579,8 +3648,8 @@ else {
         Update-WorksheetWithEPPlus -ExcelPackage $excelPackage -WorksheetName "Users"       -Rows @($UserResults)
         Update-WorksheetWithEPPlus -ExcelPackage $excelPackage -WorksheetName "Printers"    -Rows @($PrinterResults)
         Update-WorksheetWithEPPlus -ExcelPackage $excelPackage -WorksheetName "Devices"     -Rows @($DeviceResults)
-        Update-WorksheetWithEPPlus -ExcelPackage $excelPackage -WorksheetName "Diagnostics" -Rows @($DiagnosticsResults)
-        Update-WorksheetWithEPPlus -ExcelPackage $excelPackage -WorksheetName "Errors"      -Rows @($ErrorResults)
+        Update-WorksheetWithEPPlus -ExcelPackage $excelPackage -WorksheetName "Diagnostics" -Rows @($DiagnosticsResults)	-RemoveMissingRows
+        Update-WorksheetWithEPPlus -ExcelPackage $excelPackage -WorksheetName "Errors"      -Rows @($ErrorResults)			-RemoveMissingRows
 
         Restore-Neutral2CellStyles -ExcelPackage $excelPackage -Addresses $neutralCellAddresses
 

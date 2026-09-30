@@ -8,3 +8,15 @@ The script collects PC information, specifically: CPU details (including core an
 All results are exported to an Excel spreadsheet, with functionality included to append data to an existing file.
 
 Connection diagnostics are performed when errors occur, and the diagnostic results and error details are recorded on a separate sheet within the Excel spreadsheet.
+
+# Screenshots:
+
+<div align="center">
+  <img src="images/Computers.png" alt="Computers sheet" width="80%" />
+  <img src="images/Network.png" alt="Network sheet" width="80%" />
+  <img src="images/Users.png" alt="Users sheet" width="80%" />
+  <img src="images/Printers.png" alt="Printers sheet" width="80%" />
+  <img src="images/Devices.png" alt="Devies sheet" width="80%" />
+  <img src="images/Diagnostics.png" alt="Diagnostics sheet" width="80%" />
+  <img src="images/Errors.png" alt="Errors sheet" width="80%" />
+</div>

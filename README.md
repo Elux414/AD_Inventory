@@ -11,12 +11,37 @@ Connection diagnostics are performed when errors occur, and the diagnostic resul
 
 # Screenshots:
 
+## Sheet Computers
 <div align="center">
-  <img src="images/Computers.png" alt="Computers sheet" width="80%" />
-  <img src="images/Network.png" alt="Network sheet" width="80%" />
-  <img src="images/Users.png" alt="Users sheet" width="80%" />
-  <img src="images/Printers.png" alt="Printers sheet" width="80%" />
-  <img src="images/Devices.png" alt="Devies sheet" width="80%" />
-  <img src="images/Diagnostics.png" alt="Diagnostics sheet" width="80%" />
-  <img src="images/Errors.png" alt="Errors sheet" width="80%" />
+  <img src="images/Computers.png" alt="Computers sheet" width="100%" />
+</div>
+
+## Sheet Network
+<div align="center">
+  <img src="images/Network.png" alt="Network sheet" width="100%" />
+</div>
+
+## Sheet Users
+<div align="center">
+  <img src="images/Users.png" alt="Users sheet" width="100%" />
+</div>
+
+## Sheet Printers
+<div align="center">
+  <img src="images/Printers.png" alt="Printers sheet" width="100%" />
+</div>
+
+## Sheet Devices
+<div align="center">
+  <img src="images/Devices.png" alt="Devies sheet" width="100%" />
+</div>
+
+## Sheet Diagnostics
+<div align="center">
+  <img src="images/Diagnostics.png" alt="Diagnostics sheet" width="100%" />
+</div>
+
+## Sheet Errors
+<div align="center">
+  <img src="images/Errors.png" alt="Errors sheet" width="100%" />
 </div>
